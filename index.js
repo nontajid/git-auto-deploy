@@ -13,7 +13,7 @@ const config = {
     ]
 };
 
-let handdleGit = function(body) {
+let getTargetRepo = function(body) {
     repoConfig = config.repository.find( repo => repo.name == body.repository.name );
     return repoConfig;
 }
@@ -25,8 +25,8 @@ let handdlePostRequest = function() {
             body: this.body
         };
         
-        if( data.headers.x-github-event ) {
-            const repoConfig = handdleGit(data.body);
+        if( data.headers.x-github-event == 'push' ) {
+            const repoConfig = getTargetRepo(data.body);
 
             fs.appendFile(
                 config.log,
