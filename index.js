@@ -9,6 +9,7 @@ const config = {
     repository: [
         {
             name: 'git-auto-deploy',
+            path: ''
         }
     ]
 };
