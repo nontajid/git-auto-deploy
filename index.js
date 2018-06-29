@@ -13,7 +13,7 @@ let handdlePostRequest = function() {
         const data = {
             headers: this.headers,
             body: this.body
-        }
+        };
         fs.appendFile(
             config.log, 
             JSON.stringify(data),
