@@ -60,7 +60,9 @@ let handdlePostRequest = function() {
         if( data.headers['x-github-event'] == 'push' ) {
             const repo = getTargetRepo(data.body);
             if( repo ) {
-                gitPull(repo).then( data => { log(data); } );
+                gitPull(repo)
+                .then(shell => { log(shell); })
+                .catch(err => { log(err); });
                 resolve({data: repo});
             } else {
                 reject({err: 'repo not found'});
