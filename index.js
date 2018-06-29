@@ -5,8 +5,18 @@ const fs = require('fs');
 
 const config = {
     port: '18001',
-    log: './log.txt'
+    log: './log.txt',
+    repository: [
+        {
+            name: 'git-auto-deploy',
+        }
+    ]
 };
+
+let handdleGit = function(body) {
+    repoConfig = config.repository.find( repo => repo.name == body.repository.name );
+    return repoConfig;
+}
 
 let handdlePostRequest = function() {
     return new Promise((resolve,reject) => {
@@ -14,17 +24,22 @@ let handdlePostRequest = function() {
             headers: this.headers,
             body: this.body
         };
-        fs.appendFile(
-            config.log, 
-            JSON.stringify(data),
-            (err) => { 
-                if ( err ) {
-                    reject(err)
-                } else {
-                    resolve({data: 'hey'}); 
-                }
-            } 
-        );
+        
+        if( data.headers.x-github-event ) {
+            const repoConfig = handdleGit(data.body);
+
+            fs.appendFile(
+                config.log,
+                JSON.stringify(repoConfig),
+                (err) => { 
+                    if ( err ) {
+                        reject(err)
+                    } else {
+                        resolve({data: 'hey'}); 
+                    }
+                } 
+            );
+        }
     });
 }
 
