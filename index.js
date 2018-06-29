@@ -29,7 +29,6 @@ let getTargetRepo = function(body) {
 let gitPull = function(repo) {
     return new Promise((resolve, reject) => {
         const command = `su ${repo.user} -c 'cd ${repo.path} && git pull'`;
-        console.log(command);
         exec( command, (err, stdout, stderr) => {
             if ( err ) {
                 reject(err);
@@ -96,4 +95,3 @@ const server = http.createServer(function (req, res) {
 });
 
 server.listen(config.port);
-console.log('Server running at port ' + config.port);
