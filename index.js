@@ -40,7 +40,7 @@ let gitPull = function(repo) {
     })
 }
 
-let log = function() {
+let log = function(data) {
     fs.appendFile(
         config.log,
         JSON.stringify(data),
