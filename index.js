@@ -26,7 +26,7 @@ let handdlePostRequest = function() {
             body: this.body
         };
         
-        if( data.headers.x-github-event == 'push' ) {
+        if( data.headers['x-github-event'] == 'push' ) {
             const repoConfig = getTargetRepo(data.body);
 
             fs.appendFile(
