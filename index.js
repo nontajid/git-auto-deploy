@@ -2,6 +2,7 @@
 // node package
 const http = require('http');
 const fs = require('fs');
+const exec = require('child_process').exec;
 
 const config = {
     port: '18001',
@@ -9,7 +10,13 @@ const config = {
     repository: [
         {
             name: 'git-auto-deploy',
-            path: ''
+            path: '/home/nodeserver/public/18001',
+            user: 'nodeserver'
+        },
+        {
+            name: 'crm-jplsport-laravel',
+            path: '/home/crm/public_html',
+            user: 'crm'
         }
     ]
 };
@@ -17,6 +24,30 @@ const config = {
 let getTargetRepo = function(body) {
     repoConfig = config.repository.find( repo => repo.name == body.repository.name );
     return repoConfig;
+}
+
+let gitPull = function(repo) {
+    return new Promise((resolve, reject) => {
+        const command = `su ${repo.user} -c 'cd ${repo.path} && git pull'`;
+        console.log(command);
+        exec( command, (err, stdout, stderr) => {
+            if ( err ) {
+                reject(err);
+            } else {
+                resolve({ stdout: stdout, stderr: stderr });
+            }
+        });
+    })
+}
+
+let log = function() {
+    fs.appendFile(
+        config.log,
+        JSON.stringify(data),
+        (err) => {
+            if ( err ) {}
+        } 
+    );
 }
 
 let handdlePostRequest = function() {
@@ -27,19 +58,14 @@ let handdlePostRequest = function() {
         };
         
         if( data.headers['x-github-event'] == 'push' ) {
-            const repoConfig = getTargetRepo(data.body);
-
-            fs.appendFile(
-                config.log,
-                JSON.stringify(repoConfig),
-                (err) => { 
-                    if ( err ) {
-                        reject(err)
-                    } else {
-                        resolve({data: 'hey'}); 
-                    }
-                } 
-            );
+            const repo = getTargetRepo(data.body);
+            if( repo ) {
+                gitPull(repo).then( data => { log(data); } );
+                resolve({data: repo});
+            } else {
+                reject({err: 'repo not found'});
+            }
+            
         }
     });
 }
@@ -68,5 +94,4 @@ const server = http.createServer(function (req, res) {
 });
 
 server.listen(config.port);
-
 console.log('Server running at port ' + config.port);
