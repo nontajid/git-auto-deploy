@@ -1,5 +1,10 @@
 #!/usr/bin/env nodejs
 // node package
+
+// TODO :: Pull on current branch only
+// TODO :: Move config to config file instead
+// TODO :: Check for digital signature of request 
+
 const http = require('http');
 const fs = require('fs');
 const exec = require('child_process').exec;
@@ -15,8 +20,8 @@ const config = {
         },
         {
             name: 'crm-jplsport-laravel',
-            path: '/home/crm/public_html',
-            user: 'crm'
+            path: '/home/nontajid/domains/crm.dev.nontajid.com/public_html',
+            user: 'nontajid'
         }
     ]
 };
