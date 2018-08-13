@@ -2,29 +2,11 @@
 // node package
 
 // TODO :: Pull on current branch only
-// TODO :: Move config to config file instead
 // TODO :: Check for digital signature of request 
 
 const http = require('http');
-const fs = require('fs');
 const exec = require('child_process').exec;
-
-const config = {
-    port: '18001',
-    log: './log.txt',
-    repository: [
-        {
-            name: 'git-auto-deploy',
-            path: '/home/nodeserver/public/18001',
-            user: 'nodeserver'
-        },
-        {
-            name: 'crm-jplsport-laravel',
-            path: '/home/nontajid/domains/crm.dev.nontajid.com/public_html',
-            user: 'nontajid'
-        }
-    ]
-};
+const config = require('./git-deploy.config');
 
 let getTargetRepo = function(body) {
     repoConfig = config.repository.find( repo => repo.name == body.repository.name );

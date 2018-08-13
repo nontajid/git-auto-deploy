@@ -1,2 +1,6 @@
 node_modules
+
 log.txt
+
+# config file
+git-deploy.config.js
